@@ -15,7 +15,7 @@ if (os.environ.get('CAFFE_CPU_MODE')):
 else:
     caffe.set_mode_gpu()
 
-net_root = 'fcn-8s'
+net_root = 'caffe-fcn/fcn-8s'
 model_def = net_root + '/deploy.prototxt'
 model_weights = net_root + '/fcn-8s-pascalcontext.caffemodel'
 net = caffe.Net(model_def, model_weights, caffe.TEST)
