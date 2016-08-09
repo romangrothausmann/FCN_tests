@@ -1,0 +1,6 @@
+data/
+*.gz
+*.caffemodel
+
+node_modules
+.ipynb_checkpoints
