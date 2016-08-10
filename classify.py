@@ -10,10 +10,12 @@ import caffe
 
 plt.rcParams['image.interpolation'] = 'nearest'  # don't interpolate
 
-if (os.environ.get('CAFFE_CPU_MODE')):
+if (int(os.environ.get('CAFFE_CPU_MODE'))):
+    print "CPU"
     caffe.set_mode_cpu()
 else:
-    caffe.set_mode_gpu()
+    print "GPU"
+    caffe.set_mode_gpu() 
 
 net_root = 'caffe-fcn/fcn-8s'
 model_def = net_root + '/deploy.prototxt'
