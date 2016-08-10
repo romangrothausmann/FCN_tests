@@ -60,6 +60,10 @@ def rescore(c):
 
 rescore = np.vectorize(rescore)
 painted = rescore(classed)
+## 2nd Transformer just for resizing image (net output)
+transformer2 = caffe.io.Transformer({'data': (1,1)+image.shape[:2]}) # concat tuples: http://stackoverflow.com/questions/10459324/concatenating-tuple
+## 1st reshape: add depth channel (label, not RGB) to matrix; 2nd reshape: remove batchsize and depth channel for imshow
+painted = transformer2.preprocess('data', painted.reshape(*(painted.shape+(1,)))).reshape(*image.shape[:2]) # http://stackoverflow.com/questions/12720450/unpacking-arguments-only-named-arguments-may-follow-expression
 
 plt.figure(figsize=(10, 10))
 plt.imshow(painted)
