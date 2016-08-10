@@ -21,6 +21,9 @@ net_root = 'caffe-fcn/fcn-8s'
 model_def = net_root + '/deploy.prototxt'
 model_weights = net_root + '/fcn-8s-pascalcontext.caffemodel'
 net = caffe.Net(model_def, model_weights, caffe.TEST)
+image = caffe.io.load_image(sys.argv[1])
+## reshape the net input according to input image:
+net.blobs['data'].reshape(1, 3, *image.shape[:2]) # py-magic: arg unpacking of tuple consisting of 0 and 1 : https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists  http://www.saltycrane.com/blog/2008/01/how-to-use-args-and-kwargs-in-python/
 
 mu = np.array([104.00698793, 116.66876762, 122.67891434])
 # create transformer for the input called 'data'
@@ -34,8 +37,7 @@ transformer.set_raw_scale('data', 255)
 # swap channels from RGB to BGR
 transformer.set_channel_swap('data', (2, 1, 0))
 
-image = caffe.io.load_image(sys.argv[1])
-transformed_image = transformer.preprocess('data', image)
+transformed_image = transformer.preprocess('data', image) # net input dim == image dim => effectively no scaling
 # copy the image data into the memory allocated for the net
 net.blobs['data'].data[...] = transformed_image
 
