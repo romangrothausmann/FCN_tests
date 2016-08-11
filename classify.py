@@ -7,6 +7,7 @@ import sys
 caffe_root = os.environ['CAFFE_ROOT']
 sys.path.insert(0, os.path.join(caffe_root, 'python'))
 import caffe
+from PIL import Image
 
 plt.rcParams['image.interpolation'] = 'nearest'  # don't interpolate
 
@@ -21,25 +22,18 @@ net_root = 'caffe-fcn/fcn-8s'
 model_def = net_root + '/deploy.prototxt'
 model_weights = net_root + '/fcn-8s-pascalcontext.caffemodel'
 net = caffe.Net(model_def, model_weights, caffe.TEST)
-image = caffe.io.load_image(sys.argv[1])
+image = Image.open(sys.argv[1])
+## avoiding caffe.io.Transformer, as in https://github.com/shelhamer/fcn.berkeleyvision.org/blob/master/infer.py as recommended @ https://github.com/shelhamer/fcn.berkeleyvision.org/blob/master/voc-fcn8s/deploy.prototxt#L7
+# transformer.set_raw_scale('data', 255) # rescale from [0, 1] to [0, 255]
+in_ = np.array(image, dtype=np.float32) # to f32
+in_ = in_[:,:,::-1] # RGB -> BGR # transformer.set_channel_swap('data', (2, 1, 0))
+in_ -= np.array((104.00698793,116.66876762,122.67891434)) # sub. mean # transformer.set_mean('data', mu)
+in_ = in_.transpose((2,0,1)) # HxWxC -> CxHxW  # transformer.set_transpose('data', (2, 0, 1))
 ## reshape the net input according to input image:
-net.blobs['data'].reshape(1, 3, *image.shape[:2]) # py-magic: arg unpacking of tuple consisting of 0 and 1 : https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists  http://www.saltycrane.com/blog/2008/01/how-to-use-args-and-kwargs-in-python/
+net.blobs['data'].reshape(1, *in_.shape) # py-magic: arg unpacking of tuple consisting of C,H,W : https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists  http://www.saltycrane.com/blog/2008/01/how-to-use-args-and-kwargs-in-python/
 
-mu = np.array([104.00698793, 116.66876762, 122.67891434])
-# create transformer for the input called 'data'
-transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
-# move image channels to outermost dimension
-transformer.set_transpose('data', (2, 0, 1))
-# subtract the dataset-mean value in each channel
-transformer.set_mean('data', mu)
-# rescale from [0, 1] to [0, 255]
-transformer.set_raw_scale('data', 255)
-# swap channels from RGB to BGR
-transformer.set_channel_swap('data', (2, 1, 0))
-
-transformed_image = transformer.preprocess('data', image) # net input dim == image dim => effectively no scaling
 # copy the image data into the memory allocated for the net
-net.blobs['data'].data[...] = transformed_image
+net.blobs['data'].data[...] = in_
 
 
 print('Running image through net.')
