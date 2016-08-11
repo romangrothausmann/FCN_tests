@@ -10,11 +10,11 @@ fcn-8s-pascalcontext.caffemodel : %.caffemodel :
 		http://dl.caffe.berkeleyvision.org/$@ # problems with sophos, use firefox http://dl.caffe.berkeleyvision.org/
 #		http://dl.caffe.berkeleyvision.org/pascalcontext-fcn8s-heavy.caffemodel
 
-classify.py : caffe-fcn/fcn-8s/fcn-8s-pascalcontext.caffemodel
+caffe-fcn/classify.py : caffe-fcn/fcn-8s/fcn-8s-pascalcontext.caffemodel
 
-%.png : % classify.py
+caffe-fcn/images/cat.jpg.png : %.png : % caffe-fcn/classify.py
 	CAFFE_ROOT=/opt/compilation/caffe/ \
 	CAFFE_CPU_MODE=1 \
 	/usr/bin/time -v \
-	python classify.py $< $@
+	python caffe-fcn/classify.py $< $@
 
