@@ -2,6 +2,7 @@
 import numpy as np
 import mxnet as mx
 from PIL import Image
+import sys
 
 pallete = [ 0,0,0,
             128,0,0,
@@ -24,9 +25,9 @@ pallete = [ 0,0,0,
             0,192,0,
             128,192,0,
             0,64,128 ]
-img = "./person_bicycle.jpg"
-seg = img.replace("jpg", "png")
-model_previx = "FCN8s_VGG16"
+img = sys.argv[1]
+seg = sys.argv[2]
+model_previx = "mxnet-fcn/FCN8s_VGG16"
 epoch = 19
 ctx = mx.gpu(0)
 
