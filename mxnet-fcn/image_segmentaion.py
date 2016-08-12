@@ -2,29 +2,9 @@
 import numpy as np
 import mxnet as mx
 from PIL import Image
+import matplotlib.pyplot as plt
 import sys
 
-pallete = [ 0,0,0,
-            128,0,0,
-            0,128,0,
-            128,128,0,
-            0,0,128,
-            128,0,128,
-            0,128,128,
-            128,128,128,
-            64,0,0,
-            192,0,0,
-            64,128,0,
-            192,128,0,
-            64,0,128,
-            192,0,128,
-            64,128,128,
-            192,128,128,
-            0,64,0,
-            128,64,0,
-            0,192,0,
-            128,192,0,
-            0,64,128 ]
 img = sys.argv[1]
 seg = sys.argv[2]
 model_previx = "mxnet-fcn/FCN8s_VGG16"
@@ -53,9 +33,31 @@ def main():
     exector.forward(is_train=False)
     output = exector.outputs[0]
     out_img = np.uint8(np.squeeze(output.asnumpy().argmax(axis=1)))
-    out_img = Image.fromarray(out_img)
-    out_img.putpalette(pallete)
-    out_img.save(seg)
+    classed = out_img
+
+    net_root = 'caffe-fcn/fcn-8s'
+    names = dict()
+    all_labels = ["0: Background"] + open(net_root + '/legend.txt').readlines()
+    scores = np.unique(classed)
+    labels = [all_labels[s] for s in scores]
+    num_scores = len(scores)
+
+
+    def rescore(c):
+        """ rescore values from original score values (0-59) to values ranging from
+        0 to num_scores-1 """
+        return np.where(scores == c)[0][0]
+
+    rescore = np.vectorize(rescore)
+    painted = rescore(classed)
+
+    plt.figure(figsize=(10, 10))
+    plt.imshow(painted)
+    formatter = plt.FuncFormatter(lambda val, loc: labels[val])
+    plt.colorbar(ticks=range(0, num_scores), format=formatter)
+    plt.clim(-0.5, num_scores - 0.5)
+
+    plt.savefig(sys.argv[2])
 
 if __name__ == "__main__":
     main()
