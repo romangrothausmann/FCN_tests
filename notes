@@ -1,0 +1,15 @@
+(apparent) file correspondence:
+
+caffe-fcn	mxnet-fcn
+______________________________
+
+net.py	symbol_fcnxs.py
+solve.py (solver.prototxt)	solver.py
+deploy.prototxt	FCN8s_VGG16-symbol.json	net-layout
+train.prototxt		net-layout
+val.prototxt		net-layout
+	data.py	reading, cropping, iterating images
+	init_fcnxs.py
+	fcn_xs.py
+	 
+
