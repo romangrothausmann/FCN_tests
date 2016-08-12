@@ -37,7 +37,7 @@ def main():
 
     net_root = 'caffe-fcn/fcn-8s'
     names = dict()
-    all_labels = ["0: Background"] + open(net_root + '/legend.txt').readlines()
+    all_labels = ["0: Background"] + open(net_root + '/legend.txt').readlines() # legent is from PASCAL-Context_59 (http://www.cs.stanford.edu/~roozbeh/pascal-context/), but first 20 labels are identical to VOC2012 (http://host.robots.ox.ac.uk/pascal/VOC/voc2012/segexamples/index.html), which was used to train the FCN8s_VGG16 used here
     scores = np.unique(classed)
     labels = [all_labels[s] for s in scores]
     num_scores = len(scores)
