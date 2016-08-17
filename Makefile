@@ -10,9 +10,12 @@ caffe-fcn/fcn-8s/fcn-8s-pascalcontext.caffemodel : %.caffemodel :
 		http://dl.caffe.berkeleyvision.org/$@ # problems with sophos, use firefox http://dl.caffe.berkeleyvision.org/
 #		http://dl.caffe.berkeleyvision.org/pascalcontext-fcn8s-heavy.caffemodel
 
+caffe-fcn/fcn-8s/legend.txt :
+	wget http://www.cs.stanford.edu/~roozbeh/pascal-context/59_labels.txt -O $@
+
 caffe-fcn/classify.py : caffe-fcn/fcn-8s/fcn-8s-pascalcontext.caffemodel
 
-caffe-fcn/images/cat.jpg.png : %.png : % caffe-fcn/classify.py
+caffe-fcn/images/cat.jpg.png : %.png : % caffe-fcn/classify.py caffe-fcn/fcn-8s/legend.txt
 	CAFFE_ROOT=/opt/compilation/caffe/ \
 	CAFFE_CPU_MODE=1 \
 	/usr/bin/time -v \
@@ -28,7 +31,7 @@ mxnet-fcn/FCN8s_VGG16-0019.params :
 	wget -O $@ -c \
 		'https://www.dropbox.com/sh/578n5cxej7ofd6m/AABHWZHCtA2P6iR6LUflkxb_a/FCN8s_VGG16-0019-cpu.params' # dropbox has only *-cpu.params, which works with FCN8s_VGG16-symbol.json when saved without "-cpu" -> -O
 
-mxnet-fcn/image_segmentaion.py : mxnet-fcn/FCN8s_VGG16-symbol.json mxnet-fcn/FCN8s_VGG16-0019.params
+mxnet-fcn/image_segmentaion.py : mxnet-fcn/FCN8s_VGG16-symbol.json mxnet-fcn/FCN8s_VGG16-0019.params caffe-fcn/fcn-8s/legend.txt
 
 mxnet-fcn/images/cat.jpg.png : %.png : % mxnet-fcn/image_segmentaion.py
 	PYTHONPATH=/opt/compilation/mxnet/python/:$$PYTHONPATH \
