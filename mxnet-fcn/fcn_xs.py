@@ -32,12 +32,13 @@ def main():
     train_dataiter = FileIter(
         root_dir             = "./VOC2012",
         flist_name           = "train.lst",
-        # cut_off_size         = 400,
+        cut_off_size         = 60,
         rgb_mean             = (123.68, 116.779, 103.939),
         )
     val_dataiter = FileIter(
         root_dir             = "./VOC2012",
         flist_name           = "val.lst",
+        cut_off_size         = 60,
         rgb_mean             = (123.68, 116.779, 103.939),
         )
     model = Solver(
