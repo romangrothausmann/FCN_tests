@@ -8,6 +8,7 @@ infer : caffe-fcn/images/cat.jpg.png mxnet-fcn/images/cat.jpg.png
 train : mxnet-fcn/model_pascal/FCN8s_VGG16-symbol.json
 
 
+.PHONY: %.caffemodel
 caffe-fcn/fcn-8s/fcn-8s-pascalcontext.caffemodel : %.caffemodel :
 	http_proxy="http://proxy.mh-hannover.de:8080" \
 	https_proxy="http://proxy.mh-hannover.de:8080" \
@@ -17,6 +18,7 @@ caffe-fcn/fcn-8s/fcn-8s-pascalcontext.caffemodel : %.caffemodel :
 		http://dl.caffe.berkeleyvision.org/$(notdir $@) # problems with sophos, use firefox http://dl.caffe.berkeleyvision.org/
 #		http://dl.caffe.berkeleyvision.org/pascalcontext-fcn8s-heavy.caffemodel
 
+.PHONY: caffe-fcn/fcn-8s/legend.txt
 caffe-fcn/fcn-8s/legend.txt :
 	http_proxy="http://proxy.mh-hannover.de:8080" \
 	https_proxy="http://proxy.mh-hannover.de:8080" \
@@ -30,12 +32,14 @@ caffe-fcn/images/cat.jpg.png : %.png : % caffe-fcn/classify.py caffe-fcn/fcn-8s/
 	/usr/bin/time -v \
 	python caffe-fcn/classify.py $< $@
 
+.PHONY: mxnet-fcn/FCN8s_VGG16-symbol.json
 mxnet-fcn/FCN8s_VGG16-symbol.json :
 	http_proxy="http://proxy.mh-hannover.de:8080" \
 	https_proxy="http://proxy.mh-hannover.de:8080" \
 	wget -P $(dir $@) -c \
 		'https://www.dropbox.com/sh/578n5cxej7ofd6m/AAA9SFCBN8R_uL2CnAd3WQ5ia/FCN8s_VGG16-symbol.json'
 
+.PHONY: mxnet-fcn/FCN8s_VGG16-0019.params
 mxnet-fcn/FCN8s_VGG16-0019.params :
 	http_proxy="http://proxy.mh-hannover.de:8080" \
 	https_proxy="http://proxy.mh-hannover.de:8080" \
@@ -54,6 +58,7 @@ mxnet-fcn/images/cat.jpg.png : %.png : % mxnet-fcn/image_segmentaion.py
 #### training
 
 
+.PHONY: VOCtrainval_11-May-2012.tar
 VOCtrainval_11-May-2012.tar :
 	http_proxy="http://proxy.mh-hannover.de:8080" \
 	https_proxy="http://proxy.mh-hannover.de:8080" \
@@ -66,12 +71,14 @@ VOCdev%/VOC2012/ VOCdev%/VOC2012/JPEGImages/ VOCdev%/VOC2012/SegmentationClass/ 
 mxnet-fcn/VOC2012 : VOCdevkit/VOC2012/
 	ln -s ../$< $@
 
+.PHONY: mxnet-fcn/VGG_FC_ILSVRC_16_layers-symbol.json
 mxnet-fcn/VGG_FC_ILSVRC_16_layers-symbol.json :
 	http_proxy="http://proxy.mh-hannover.de:8080" \
 	https_proxy="http://proxy.mh-hannover.de:8080" \
 	wget -O $@ -c \
 		'https://www.dropbox.com/sh/578n5cxej7ofd6m/AABS-VGdlyuhfW9T9nXu7aNza/VGG_FC_ILSVRC_16_layers-symbol.json?dl=0'
 
+.PHONY: mxnet-fcn/VGG_FC_ILSVRC_16_layers-0074.params
 mxnet-fcn/VGG_FC_ILSVRC_16_layers-0074.params :
 	http_proxy="http://proxy.mh-hannover.de:8080" \
 	https_proxy="http://proxy.mh-hannover.de:8080" \
