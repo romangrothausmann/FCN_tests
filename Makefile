@@ -11,8 +11,9 @@ train : mxnet-fcn/model_pascal/FCN8s_VGG16-symbol.json
 caffe-fcn/fcn-8s/fcn-8s-pascalcontext.caffemodel : %.caffemodel :
 	http_proxy="http://proxy.mh-hannover.de:8080" \
 	wget \
+		-O $@ -c \
 		-U 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0' \
-		http://dl.caffe.berkeleyvision.org/$@ # problems with sophos, use firefox http://dl.caffe.berkeleyvision.org/
+		http://dl.caffe.berkeleyvision.org/$(notdir $@) # problems with sophos, use firefox http://dl.caffe.berkeleyvision.org/
 #		http://dl.caffe.berkeleyvision.org/pascalcontext-fcn8s-heavy.caffemodel
 
 caffe-fcn/fcn-8s/legend.txt :
