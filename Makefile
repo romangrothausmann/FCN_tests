@@ -28,7 +28,7 @@ caffe-fcn/classify.py : caffe-fcn/fcn-8s/fcn-8s-pascalcontext.caffemodel
 
 caffe-fcn/images/cat.jpg.png : %.png : % caffe-fcn/classify.py caffe-fcn/fcn-8s/legend.txt
 	CAFFE_ROOT=/opt/compilation/caffe/ \
-	CAFFE_CPU_MODE=1 \
+	CAFFE_CPU_MODE=0 \
 	/usr/bin/time -v \
 	python caffe-fcn/classify.py $< $@
 
