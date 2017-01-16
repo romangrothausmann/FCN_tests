@@ -27,8 +27,10 @@ caffe-fcn/fcn-8s/legend.txt :
 caffe-fcn/classify.py : caffe-fcn/fcn-8s/fcn-8s-pascalcontext.caffemodel
 
 caffe-fcn/images/cat.jpg.png : %.png : % caffe-fcn/classify.py caffe-fcn/fcn-8s/legend.txt
+## use old Blas/Lapack for numpy to avoid "ValueError: On entry to DGETRI parameter number 6 had an illegal value" from "/usr/lib/python2.7/dist-packages/scipy/linalg/basic.py": http://earthdef.caltech.edu/boards/3/topics/848
 	CAFFE_ROOT=/opt/compilation/caffe/ \
 	CAFFE_CPU_MODE=0 \
+	LD_LIBRARY_PATH=/usr/lib/libblas/:/usr/lib/lapack/ \
 	/usr/bin/time -v \
 	python caffe-fcn/classify.py $< $@
 
