@@ -60,15 +60,15 @@ mxnet-fcn/images/cat.jpg.png : %.png : % mxnet-fcn/image_segmentaion.py
 #### training
 
 
-.PHONY: VOCtrainval_11-May-2012.tar
+# .PHONY: VOCtrainval_11-May-2012.tar ## causes tar to execute each time
 VOCtrainval_11-May-2012.tar :
 	http_proxy="http://proxy.mh-hannover.de:8080" \
 	https_proxy="http://proxy.mh-hannover.de:8080" \
 	wget -c \
 		'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar'
 
-VOCdev%/VOC2012/ VOCdev%/VOC2012/JPEGImages/ VOCdev%/VOC2012/SegmentationClass/ VOCdev%/VOC2012/ImageSets/Segmentation/train.txt VOCdev%/VOC2012/ImageSets/Segmentation/val.txt : | VOCtrainval_11-May-2012.tar # | because tar stores acc-times
-	tar xvf $< # --strip-components=1
+VOCdev%/VOC2012/ VOCdev%/VOC2012/JPEGImages/ VOCdev%/VOC2012/SegmentationClass/ VOCdev%/VOC2012/ImageSets/Segmentation/train.txt VOCdev%/VOC2012/ImageSets/Segmentation/val.txt : VOCtrainval_11-May-2012.tar # | because tar stores acc-times
+	tar xvf $< -m # --strip-components=1
 
 mxnet-fcn/VOC2012 : VOCdevkit/VOC2012/
 	ln -s ../$< $@
